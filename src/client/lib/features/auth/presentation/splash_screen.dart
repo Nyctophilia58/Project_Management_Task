@@ -78,7 +78,7 @@ class SplashScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 40),
             const Text(
-              'TaskFlow',
+              'TaskForge',
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.blue),
             ),
           ],

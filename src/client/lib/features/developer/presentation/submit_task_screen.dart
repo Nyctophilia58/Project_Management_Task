@@ -13,6 +13,7 @@ class SubmitTaskScreen extends ConsumerStatefulWidget {
 }
 
 class _SubmitTaskScreenState extends ConsumerState<SubmitTaskScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _hoursController = TextEditingController();
   PlatformFile? _zipFile;
   bool _loading = false;
@@ -29,37 +30,92 @@ class _SubmitTaskScreenState extends ConsumerState<SubmitTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Submit Task')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Text('Task: ${widget.task.title}', style: const TextStyle(fontSize: 18)),
-            const SizedBox(height: 20),
-            TextField(
-              controller: _hoursController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Hours Spent',
-                border: OutlineInputBorder(),
-              ),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        title: const Text('Submit Task'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        foregroundColor: Colors.white,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              theme.primaryColor.withOpacity(0.8),
+              theme.scaffoldBackgroundColor,
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Card(
+                  elevation: 12,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Task: ${widget.task.title}',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: theme.primaryColor,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          TextFormField(
+                            controller: _hoursController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: 'Hours Spent',
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide(color: theme.primaryColor, width: 2),
+                              ),
+                            ),
+                            validator: (v) => v?.trim().isEmpty ?? true ? 'Hour is required' : null,
+                          ),
+                          const SizedBox(height: 20),
+                          ElevatedButton.icon(
+                            onPressed: _pickZip,
+                            icon: const Icon(Icons.attach_file),
+                            label: Text(_zipFile == null ? 'Pick ZIP File' : 'ZIP: ${_zipFile!.name}'),
+                          ),
+                          const SizedBox(height: 30),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: _loading || _zipFile == null ? null : _submit,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: theme.primaryColor,
+                                foregroundColor: Colors.white,
+                                elevation: 8,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                              ),
+                              child: _loading ? const CircularProgressIndicator() : const Text('Submit Solution'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: _pickZip,
-              icon: const Icon(Icons.attach_file),
-              label: Text(_zipFile == null ? 'Pick ZIP File' : 'ZIP: ${_zipFile!.name}'),
-            ),
-            const SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _loading || _zipFile == null ? null : _submit,
-                child: _loading ? const CircularProgressIndicator() : const Text('Submit Solution'),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

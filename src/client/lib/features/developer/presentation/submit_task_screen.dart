@@ -1,3 +1,4 @@
+import 'package:client/features/buyer/providers/buyer_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
@@ -133,6 +134,7 @@ class _SubmitTaskScreenState extends ConsumerState<SubmitTaskScreen> {
     try {
       await ref.read(developerServiceProvider).submitTask(widget.task.id, hours, _zipFile!);
       await ref.refresh(myTasksProvider.future);
+      ref.refresh(projectTasksProvider(widget.task.projectId));
       if(!mounted) return;
       Navigator.popUntil(context, (route) => route.isFirst);
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Task submitted successfully!')));

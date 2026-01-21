@@ -41,11 +41,6 @@ class BuyerService {
         .toList();
   }
 
-  // Future<List<Task>> getTasksForProject(int projectId) async {
-  //   final response = await _dio.get('/tasks/project/$projectId');
-  //   return (response.data as List).map((json) => Task.fromJson(json)).toList();
-  // }
-
   Future<List<Task>> getTasksForProject(int projectId) async {
     // Use the buyer task list endpoint — it returns all tasks for the buyer's projects
     final response = await _dio.get('/tasks/'); // ← NO query param
@@ -93,9 +88,6 @@ class BuyerService {
       }
 
       final savePath = '/storage/emulated/0/Download/$filename';
-
-      print('Downloading ZIP from: $zipPath');
-      print('Saving to: $savePath');
 
       await _dio.download(zipPath, savePath);
 

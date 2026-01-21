@@ -1,3 +1,4 @@
+import 'package:client/features/buyer/providers/buyer_providers.dart';
 import 'package:client/features/developer/presentation/submit_task_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -195,6 +196,7 @@ class _TaskAction extends ConsumerWidget {
         onPressed: () async {
           await ref.read(developerServiceProvider).startTask(task.id);
           ref.refresh(myTasksProvider);
+          ref.refresh(projectTasksProvider(task.projectId));
         },
         icon: const Icon(Icons.play_arrow),
         label: const Text('Start'),
